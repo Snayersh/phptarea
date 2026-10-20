@@ -1,74 +1,147 @@
 <?php
-require_once "db.php";
 session_start();
+require_once "db.php";
 
-// verificar que se envió parametro
-if ( ! isset($_GET['id_alumno']) ) {
-  $_SESSION['error'] = "Alumno no especificado";
-  header('Location: index.php');
-  return;
+// Validación de parámetro id_alumno
+if (!isset($_GET['id_alumno']) || !is_numeric($_GET['id_alumno'])) {
+    $_SESSION['error'] = "No se especificó un identificador de alumno válido.";
+    header('Location: index.php');
+    exit();
 }
 
-$stmt = $pdo->prepare("SELECT * FROM alumno where id_alumno = :idx");
-$stmt->execute(array(":idx" => $_GET['id_alumno']));
-$row = $stmt->fetch(PDO::FETCH_ASSOC);
-if ( $row === false ) {
-    $_SESSION['error'] = 'Alumno no encontrado';
-    header( 'Location: index.php' ) ;
-    return;
+$stmt = $pdo->prepare("SELECT id_alumno, nombres, apellidos, correo, aficiones FROM alumno WHERE id_alumno = :idx");
+$stmt->execute([':idx' => $_GET['id_alumno']]);
+$alumno = $stmt->fetch();
+
+if ($alumno === false) {
+    $_SESSION['error'] = "El alumno solicitado no existe en el sistema.";
+    header('Location: index.php');
+    exit();
 }
 
-// Flash pattern
-if ( isset($_SESSION['error']) ) {
-    echo '<p style="color:red">'.$_SESSION['error']."</p>\n";
-    unset($_SESSION['error']);
-}
-
-$fn = htmlentities($row['nombres']);
-$ln = htmlentities($row['apellidos']);
-$em = htmlentities($row['correo']);
-$af = htmlentities($row['aficiones']);
-$id = $row['id_alumno'];
-
-
+// Consulta de cursos asociados
+$stmtCursos = $pdo->prepare("
+    SELECT ac.anio, c.nombre 
+    FROM alumno_cursos ac 
+    INNER JOIN cursos c ON c.id_curso = ac.id_curso 
+    WHERE ac.id_alumno = :idx 
+    ORDER BY ac.anio DESC, c.nombre ASC
+");
+$stmtCursos->execute([':idx' => $_GET['id_alumno']]);
+$cursos = $stmtCursos->fetchAll();
 ?>
-<html>
+<!DOCTYPE html>
+<html lang="es">
 <head>
-<title>Consulta de Alumno</title>
-</head><body>
+    <?php require_once 'head.php'; ?>
+    <title>Detalles del Estudiante - <?= htmlspecialchars($alumno['nombres'] . ' ' . $alumno['apellidos'], ENT_QUOTES, 'UTF-8') ?></title>
+</head>
+<body>
+    <nav class="navbar navbar-custom mb-4">
+        <div class="container">
+            <a class="navbar-brand" href="index.php">
+                <i class="bi bi-mortarboard-fill text-primary"></i> Control Académico
+            </a>
+            <div class="d-flex align-items-center gap-2">
+                <a href="index.php" class="btn btn-outline-light btn-sm">
+                    <i class="bi bi-arrow-left"></i> Volver a la Lista
+                </a>
+            </div>
+        </div>
+    </nav>
 
-<h1>Consulta de Alumno</h1>
+    <div class="container my-4">
+        <div class="row justify-content-center">
+            <div class="col-12 col-lg-8">
+                <div class="card-custom">
+                    <div class="card-header-custom d-flex justify-content-between align-items-center">
+                        <h2 class="h5 fw-bold mb-0 text-dark">
+                            <i class="bi bi-person-badge text-primary me-2"></i> Expediente del Estudiante
+                        </h2>
+                        <span class="badge bg-secondary">ID: #<?= (int)$alumno['id_alumno'] ?></span>
+                    </div>
 
-<form >
-<p>Nombres: <?php echo($fn);?></p>
+                    <div class="p-4">
+                        <div class="row g-3 mb-4">
+                            <div class="col-md-6">
+                                <label class="text-muted small fw-semibold text-uppercase">Nombres</label>
+                                <p class="fs-6 fw-bold mb-0 text-dark"><?= htmlspecialchars($alumno['nombres'], ENT_QUOTES, 'UTF-8') ?></p>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="text-muted small fw-semibold text-uppercase">Apellidos</label>
+                                <p class="fs-6 fw-bold mb-0 text-dark"><?= htmlspecialchars($alumno['apellidos'], ENT_QUOTES, 'UTF-8') ?></p>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="text-muted small fw-semibold text-uppercase">Correo Electrónico</label>
+                                <p class="fs-6 mb-0">
+                                    <a href="mailto:<?= htmlspecialchars($alumno['correo'], ENT_QUOTES, 'UTF-8') ?>" class="text-decoration-none">
+                                        <i class="bi bi-envelope me-1"></i><?= htmlspecialchars($alumno['correo'], ENT_QUOTES, 'UTF-8') ?>
+                                    </a>
+                                </p>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="text-muted small fw-semibold text-uppercase">Aficiones y Pasatiempos</label>
+                                <p class="fs-6 mb-0 text-secondary"><?= nl2br(htmlspecialchars($alumno['aficiones'], ENT_QUOTES, 'UTF-8')) ?></p>
+                            </div>
+                        </div>
 
-<p>Apellidos: <?php echo($ln);?></p>
+                        <hr class="my-4">
 
-<p>Correo:<?php echo($em);?></p>
+                        <h3 class="h6 fw-bold text-dark mb-3">
+                            <i class="bi bi-award text-warning me-2"></i> Cursos y Certificaciones IT
+                        </h3>
 
-<p>Aficiones: <?php echo($af);?></p>
+                        <?php if (count($cursos) > 0): ?>
+                            <div class="table-responsive">
+                                <table class="table table-custom table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th style="width: 120px;">Año</th>
+                                            <th>Nombre del Curso / Certificación</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <?php foreach ($cursos as $cur): ?>
+                                            <tr>
+                                                <td>
+                                                    <span class="badge bg-primary bg-opacity-10 text-primary fw-semibold px-2 py-1">
+                                                        <?= htmlspecialchars($cur['anio'], ENT_QUOTES, 'UTF-8') ?>
+                                                    </span>
+                                                </td>
+                                                <td class="fw-medium text-dark">
+                                                    <?= htmlspecialchars($cur['nombre'], ENT_QUOTES, 'UTF-8') ?>
+                                                </td>
+                                            </tr>
+                                        <?php endforeach; ?>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <?php else: ?>
+                            <div class="alert alert-light border text-muted py-3">
+                                <i class="bi bi-info-circle me-1"></i> Este estudiante no tiene cursos o certificaciones asociadas.
+                            </div>
+                        <?php endif; ?>
 
-<p>Cursos y certificaciones</p>
-<ul>
-<?php
-	$stmt = $pdo->prepare("SELECT ac.anio, c.nombre FROM alumno_cursos ac inner join cursos c 
-							on c.id_curso = ac.id_curso
-							where ac.id_alumno = :idx");
-	$stmt->execute(array(":idx" => $_GET['id_alumno']));
-	$result = $stmt -> fetchAll();
+                        <div class="mt-4 pt-2 d-flex gap-2">
+                            <a href="index.php" class="btn btn-secondary">
+                                <i class="bi bi-arrow-left me-1"></i> Regresar
+                            </a>
+                            <?php if (isset($_SESSION['id_usuario'])): ?>
+                                <a href="editar_db.php?id_alumno=<?= (int)$alumno['id_alumno'] ?>" class="btn btn-warning">
+                                    <i class="bi bi-pencil-square me-1"></i> Editar Estudiante
+                                </a>
+                            <?php endif; ?>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
-	foreach( $result as $row ) {
-		echo "<li>".$row['anio'] ;
-		echo ": ";
-		echo $row['nombre'];
-		echo "</li>";
-	}
-?>
-</ul>
-
-
-<input type="hidden" id="id_alumno" name="id_alumno" value="<?php echo($id);?>">
- 
-
-<a href="index.php">Regresar</a></p>
-</form>
+    <footer>
+        <div class="container text-center">
+            <small>&copy; <?= date('Y') ?> Sistema de Registro de Estudiantes. Todos los derechos reservados.</small>
+        </div>
+    </footer>
+</body>
+</html>

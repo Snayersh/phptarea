@@ -1,18 +1,30 @@
 <?php
-
-if (!isset($_GET['term'])) die('parametro no especificado');
-
 session_start();
-if ( !isset($_SESSION['id_usuario']) ) {
-	die( "ACCESS DENIED");
-}
-require_once "db.php";
-header('Content-Type: application/json; charset=utf-8');
-$stmt = $pdo->prepare('SELECT nombre FROM cursos WHERE nombre LIKE :texto');
-$stmt->execute(array( ':texto' => $_GET['term']."%"));
-$retval = array();
-while ( $row = $stmt->fetch(PDO::FETCH_ASSOC) ) {
-  $retval[] = $row['nombre'];
+
+if (!isset($_SESSION['id_usuario'])) {
+    http_response_code(403);
+    header('Content-Type: application/json; charset=utf-8');
+    echo json_encode(['error' => 'Acceso denegado']);
+    exit();
 }
 
-echo(json_encode($retval, JSON_PRETTY_PRINT));
+if (!isset($_GET['term']) || trim($_GET['term']) === '') {
+    header('Content-Type: application/json; charset=utf-8');
+    echo json_encode([]);
+    exit();
+}
+
+require_once "db.php";
+
+header('Content-Type: application/json; charset=utf-8');
+
+$stmt = $pdo->prepare('SELECT nombre FROM cursos WHERE nombre LIKE :texto ORDER BY nombre ASC LIMIT 10');
+$stmt->execute([':texto' => '%' . trim($_GET['term']) . '%']);
+
+$cursos = [];
+while ($row = $stmt->fetch()) {
+    $cursos[] = $row['nombre'];
+}
+
+echo json_encode($cursos);
+exit();
