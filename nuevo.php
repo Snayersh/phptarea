@@ -143,7 +143,7 @@ if (isset($_POST['nombres']) && isset($_POST['apellidos']) && isset($_POST['corr
     <nav class="navbar navbar-custom mb-4">
         <div class="container">
             <a class="navbar-brand" href="index.php">
-                <i class="bi bi-mortarboard-fill text-primary"></i> Control Académico
+                <div class="brand-icon"><i class="bi bi-mortarboard-fill"></i></div><span>Control Académico</span>
             </a>
             <a href="index.php" class="btn btn-outline-light btn-sm">
                 <i class="bi bi-arrow-left"></i> Volver a la Lista

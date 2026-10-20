@@ -10,8 +10,9 @@ if (!isset($_SESSION['id_usuario'])) {
 }
 
 // Procesar eliminación vía POST
-if (isset($_POST['delete']) && isset($_POST['id_alumno']) && is_numeric($_POST['id_alumno'])) {
-    $id_alumno = (int)$_POST['id_alumno'];
+$id_post = $_POST['id_alumno'] ?? $_POST['id'] ?? null;
+if (isset($_POST['delete']) && $id_post !== null && is_numeric($id_post)) {
+    $id_alumno = (int)$id_post;
 
     try {
         $pdo->beginTransaction();
@@ -36,14 +37,15 @@ if (isset($_POST['delete']) && isset($_POST['id_alumno']) && is_numeric($_POST['
 }
 
 // Validación de parámetro GET
-if (!isset($_GET['id_alumno']) || !is_numeric($_GET['id_alumno'])) {
+$id_get = $_GET['id_alumno'] ?? $_GET['id'] ?? null;
+if ($id_get === null || !is_numeric($id_get)) {
     $_SESSION['error'] = "No se especificó ningún registro de alumno para eliminar.";
     header('Location: index.php');
     exit();
 }
 
 $stmt = $pdo->prepare("SELECT id_alumno, nombres, apellidos, correo FROM alumno WHERE id_alumno = :idx");
-$stmt->execute([':idx' => $_GET['id_alumno']]);
+$stmt->execute([':idx' => $id_get]);
 $alumno = $stmt->fetch();
 
 if ($alumno === false) {
@@ -62,7 +64,13 @@ if ($alumno === false) {
     <nav class="navbar navbar-custom mb-4">
         <div class="container">
             <a class="navbar-brand" href="index.php">
-                <i class="bi bi-mortarboard-fill text-primary"></i> Control Académico
+                <div class="brand-icon">
+                    <i class="bi bi-mortarboard-fill"></i>
+                </div>
+                <span>Control Académico</span>
+            </a>
+            <a href="index.php" class="btn btn-outline-light btn-sm">
+                <i class="bi bi-arrow-left"></i> Volver a la Lista
             </a>
         </div>
     </nav>
@@ -71,17 +79,17 @@ if ($alumno === false) {
         <div class="row justify-content-center">
             <div class="col-12 col-md-8 col-lg-6">
                 <div class="card-custom border-danger">
-                    <div class="card-header bg-danger text-white py-3">
-                        <h2 class="h5 mb-0 fw-bold">
+                    <div class="card-header bg-danger bg-opacity-10 border-danger border-opacity-25 py-3 px-4">
+                        <h2 class="h5 mb-0 fw-bold text-danger">
                             <i class="bi bi-exclamation-triangle-fill me-2"></i> Confirmar Eliminación
                         </h2>
                     </div>
-                    <div class="p-4">
-                        <p class="text-dark">
+                    <div class="p-4 p-md-5">
+                        <p class="text-dark fs-6 mb-3">
                             ¿Está seguro de que desea eliminar permanentemente al siguiente alumno y todas sus certificaciones asociadas?
                         </p>
                         
-                        <div class="bg-light p-3 rounded mb-4 border">
+                        <div class="bg-light p-3 rounded-3 mb-4 border">
                             <p class="mb-1"><strong>Nombre completo:</strong> <?= htmlspecialchars($alumno['nombres'] . ' ' . $alumno['apellidos'], ENT_QUOTES, 'UTF-8') ?></p>
                             <p class="mb-0"><strong>Correo:</strong> <?= htmlspecialchars($alumno['correo'], ENT_QUOTES, 'UTF-8') ?></p>
                         </div>
@@ -95,7 +103,7 @@ if ($alumno === false) {
                                     <i class="bi bi-x-circle me-1"></i> Cancelar
                                 </a>
                                 <button type="submit" name="delete" class="btn btn-danger">
-                                    <i class="bi bi-trash3-fill me-1"></i> Eliminar Registro
+                                    <i class="bi bi-trash3-fill me-1"></i> Eliminar Definitivamente
                                 </button>
                             </div>
                         </form>

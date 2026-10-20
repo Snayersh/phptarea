@@ -1,222 +1,545 @@
 /* ==========================================================================
-   Estilos Personalizados del Sistema de Gestión de Alumnos
-   Desarrollado para entrega académica - Bootstrap 5 Companion Styles
+   SISTEMA DE GESTIÓN ACADÉMICA - ESTILOS PREMIUM
+   Diseño de vanguardia: Glassmorphism, Paleta HSL/Tailored, Microinteracciones
    ========================================================================== */
 
 :root {
-    --primary-color: #4f46e5;
-    --primary-hover: #4338ca;
-    --secondary-color: #0ea5e9;
-    --success-color: #10b981;
-    --danger-color: #ef4444;
-    --warning-color: #f59e0b;
-    --dark-color: #1e293b;
-    --light-bg: #f8fafc;
-    --card-bg: #ffffff;
-    --border-color: #e2e8f0;
-    --text-muted: #64748b;
-    --border-radius: 0.75rem;
-    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
-    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+    --primary: #4f46e5;
+    --primary-light: #6366f1;
+    --primary-dark: #3730a3;
+    --primary-glow: rgba(99, 102, 241, 0.25);
+    
+    --accent: #06b6d4;
+    --accent-glow: rgba(6, 182, 212, 0.25);
+    
+    --success: #10b981;
+    --success-glow: rgba(16, 185, 129, 0.25);
+    
+    --warning: #f59e0b;
+    --warning-glow: rgba(245, 158, 11, 0.25);
+    
+    --danger: #ef4444;
+    --danger-glow: rgba(239, 68, 68, 0.25);
+
+    --slate-900: #0f172a;
+    --slate-800: #1e293b;
+    --slate-700: #334155;
+    --slate-600: #475569;
+    --slate-500: #64748b;
+    --slate-400: #94a3b8;
+    --slate-300: #cbd5e1;
+    --slate-200: #e2e8f0;
+    --slate-100: #f1f5f9;
+    --slate-50:  #f8fafc;
+
+    --card-radius: 1rem;
+    --btn-radius: 0.65rem;
+    --badge-radius: 9999px;
+
+    --transition-fast: 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-smooth: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-bounce: 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
+/* ==========================================================================
+   Base y Fondo Atmosférico
+   ========================================================================== */
 body {
-    background-color: var(--light-bg);
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    color: #334155;
+    background-color: #f8fafc;
+    background-image: 
+        radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.08) 0px, transparent 50%),
+        radial-gradient(at 100% 0%, rgba(6, 182, 212, 0.07) 0px, transparent 40%),
+        radial-gradient(at 50% 100%, rgba(99, 102, 241, 0.05) 0px, transparent 50%);
+    background-attachment: fixed;
+    font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    color: var(--slate-700);
     min-height: 100vh;
     display: flex;
     flex-direction: column;
+    -webkit-font-smoothing: antialiased;
 }
 
-/* Navbar Custom */
+/* ==========================================================================
+   Barra de Navegación Glassmorphic
+   ========================================================================== */
 .navbar-custom {
-    background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
-    box-shadow: var(--shadow-md);
+    background: rgba(15, 23, 42, 0.92);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     padding: 0.85rem 0;
+    box-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.15);
 }
 
 .navbar-brand {
     font-weight: 700;
     font-size: 1.25rem;
+    letter-spacing: -0.02em;
     color: #ffffff !important;
-    display: flex;
+    display: inline-flex;
     align-items: center;
-    gap: 0.5rem;
+    gap: 0.65rem;
+    transition: transform var(--transition-bounce);
 }
 
-/* Tarjeta de Integrantes del Grupo */
-.team-card {
-    background: linear-gradient(135deg, #ffffff 0%, #f1f5f9 100%);
-    border: 1px solid var(--border-color);
-    border-left: 5px solid var(--primary-color);
-    border-radius: var(--border-radius);
-    box-shadow: var(--shadow-sm);
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+.navbar-brand:hover {
+    transform: scale(1.02);
 }
 
-.team-card:hover {
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-md);
+.brand-icon {
+    width: 38px;
+    height: 38px;
+    background: linear-gradient(135deg, #6366f1 0%, #4338ca 100%);
+    border-radius: 0.65rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: #ffffff;
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.35);
 }
 
-.member-badge {
-    background: #e0e7ff;
-    color: var(--primary-hover);
-    font-weight: 600;
-    font-size: 0.85rem;
-    padding: 0.4rem 0.75rem;
+/* Avatar Pill Usuario */
+.user-pill {
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    padding: 0.35rem 0.85rem;
     border-radius: 9999px;
     display: inline-flex;
     align-items: center;
-    gap: 0.35rem;
+    gap: 0.5rem;
+    font-size: 0.85rem;
+    color: #e2e8f0;
 }
 
-/* Tarjetas Principales */
-.card-custom {
-    background-color: var(--card-bg);
-    border: 1px solid var(--border-color);
-    border-radius: var(--border-radius);
-    box-shadow: var(--shadow-sm);
+.status-dot {
+    width: 8px;
+    height: 8px;
+    background-color: var(--success);
+    border-radius: 50%;
+    box-shadow: 0 0 8px var(--success);
+    display: inline-block;
+}
+
+/* ==========================================================================
+   Banner / Tarjeta Hero de "Integrantes del grupo"
+   ========================================================================== */
+.team-card {
+    background: #ffffff;
+    border: 1px solid rgba(226, 232, 240, 0.8);
+    border-radius: var(--card-radius);
+    padding: 1.5rem;
+    box-shadow: 
+        0 10px 25px -5px rgba(15, 23, 42, 0.05),
+        0 8px 10px -6px rgba(15, 23, 42, 0.02);
+    position: relative;
     overflow: hidden;
+    transition: all var(--transition-smooth);
+}
+
+.team-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #6366f1, #06b6d4, #10b981);
+}
+
+.team-card:hover {
+    box-shadow: 
+        0 20px 30px -10px rgba(99, 102, 241, 0.12),
+        0 8px 12px -6px rgba(15, 23, 42, 0.04);
+}
+
+.team-badge-header {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--primary);
+    background: rgba(99, 102, 241, 0.1);
+    padding: 0.25rem 0.65rem;
+    border-radius: var(--badge-radius);
+}
+
+/* Badge Individual de Integrante */
+.member-badge {
+    background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+    border: 1px solid var(--slate-200);
+    color: var(--slate-800);
+    font-size: 0.85rem;
+    padding: 0.45rem 0.85rem;
+    border-radius: var(--badge-radius);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
+    transition: all var(--transition-bounce);
+}
+
+.member-avatar {
+    width: 26px;
+    height: 26px;
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+    color: #ffffff;
+    font-size: 0.725rem;
+    font-weight: 700;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.member-badge:hover {
+    transform: translateY(-2px);
+    background: #ffffff;
+    border-color: var(--primary-light);
+    box-shadow: 0 6px 15px -3px var(--primary-glow);
+    color: var(--primary-dark);
+}
+
+.member-badge strong {
+    font-weight: 600;
+    color: var(--slate-800);
+}
+
+.member-badge .badge-carne {
+    color: var(--slate-500);
+    font-family: monospace;
+    font-size: 0.825rem;
+}
+
+/* ==========================================================================
+   Tarjetas de Contenido Principal (Cards)
+   ========================================================================== */
+.card-custom {
+    background: #ffffff;
+    border: 1px solid rgba(226, 232, 240, 0.9);
+    border-radius: var(--card-radius);
+    box-shadow: 
+        0 10px 25px -5px rgba(15, 23, 42, 0.04),
+        0 8px 10px -6px rgba(15, 23, 42, 0.02);
+    overflow: hidden;
+    transition: box-shadow var(--transition-smooth);
+}
+
+.card-custom:hover {
+    box-shadow: 
+        0 15px 30px -5px rgba(15, 23, 42, 0.08),
+        0 10px 15px -5px rgba(15, 23, 42, 0.04);
 }
 
 .card-header-custom {
-    background-color: #ffffff;
-    border-bottom: 1px solid var(--border-color);
-    padding: 1.25rem 1.5rem;
+    background: #ffffff;
+    border-bottom: 1px solid var(--slate-100);
+    padding: 1.25rem 1.75rem;
 }
 
-/* Tablas */
+/* ==========================================================================
+   Tabla de Registros (Fintech Grade)
+   ========================================================================== */
 .table-custom {
     margin-bottom: 0;
     vertical-align: middle;
 }
 
 .table-custom thead th {
-    background-color: #f1f5f9;
-    color: #475569;
-    font-size: 0.825rem;
+    background-color: #f8fafc;
+    color: var(--slate-500);
+    font-size: 0.75rem;
     font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: 0.05em;
+    letter-spacing: 0.075em;
     border-top: none;
-    border-bottom: 1px solid var(--border-color);
-    padding: 0.9rem 1rem;
+    border-bottom: 1px solid var(--slate-200);
+    padding: 1rem 1.25rem;
 }
 
 .table-custom tbody tr {
-    transition: background-color 0.15s ease;
+    transition: background-color var(--transition-fast), transform var(--transition-fast);
 }
 
 .table-custom tbody tr:hover {
-    background-color: #f8fafc;
+    background-color: rgba(99, 102, 241, 0.03) !important;
 }
 
 .table-custom tbody td {
-    padding: 0.9rem 1rem;
-    border-bottom: 1px solid var(--border-color);
+    padding: 1rem 1.25rem;
+    border-bottom: 1px solid var(--slate-100);
+    font-size: 0.925rem;
 }
 
-/* Botones de Acción en Tablas */
+/* Chip de Estudiante en Tabla */
+.student-name-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.65rem;
+    font-weight: 600;
+    color: var(--slate-800);
+}
+
+.student-initials {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.15) 0%, rgba(6, 182, 212, 0.15) 100%);
+    color: var(--primary);
+    font-weight: 700;
+    font-size: 0.8rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid rgba(99, 102, 241, 0.2);
+}
+
+/* Botones de Acción Estilizados */
 .action-btn-group {
     display: inline-flex;
-    gap: 0.35rem;
+    gap: 0.4rem;
     align-items: center;
 }
 
 .btn-sm-action {
-    padding: 0.35rem 0.65rem;
+    padding: 0.4rem 0.75rem;
     font-size: 0.8rem;
-    font-weight: 500;
-    border-radius: 0.45rem;
+    font-weight: 600;
+    border-radius: var(--btn-radius);
     display: inline-flex;
     align-items: center;
-    gap: 0.25rem;
+    gap: 0.35rem;
     text-decoration: none;
-    transition: all 0.15s ease-in-out;
+    border: 1px solid transparent;
+    transition: all var(--transition-bounce);
 }
 
-/* Formularios */
+.btn-action-view {
+    background: rgba(6, 182, 212, 0.08);
+    color: #0891b2;
+    border-color: rgba(6, 182, 212, 0.2);
+}
+.btn-action-view:hover {
+    background: #0891b2;
+    color: #ffffff;
+    box-shadow: 0 4px 12px var(--accent-glow);
+    transform: translateY(-2px);
+}
+
+.btn-action-edit {
+    background: rgba(245, 158, 11, 0.08);
+    color: #d97706;
+    border-color: rgba(245, 158, 11, 0.25);
+}
+.btn-action-edit:hover {
+    background: #d97706;
+    color: #ffffff;
+    box-shadow: 0 4px 12px var(--warning-glow);
+    transform: translateY(-2px);
+}
+
+.btn-action-delete {
+    background: rgba(239, 68, 68, 0.08);
+    color: #dc2626;
+    border-color: rgba(239, 68, 68, 0.2);
+}
+.btn-action-delete:hover {
+    background: #dc2626;
+    color: #ffffff;
+    box-shadow: 0 4px 12px var(--danger-glow);
+    transform: translateY(-2px);
+}
+
+/* ==========================================================================
+   Botones Principales y Formularios
+   ========================================================================== */
+.btn-primary {
+    background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+    border: none;
+    border-radius: var(--btn-radius);
+    padding: 0.55rem 1.25rem;
+    font-weight: 600;
+    box-shadow: 0 4px 14px var(--primary-glow);
+    transition: all var(--transition-bounce);
+}
+
+.btn-primary:hover {
+    background: linear-gradient(135deg, #4f46e5 0%, #4338ca 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px var(--primary-glow);
+}
+
+.btn-success {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    border: none;
+    border-radius: var(--btn-radius);
+    padding: 0.55rem 1.25rem;
+    font-weight: 600;
+    box-shadow: 0 4px 14px var(--success-glow);
+    transition: all var(--transition-bounce);
+}
+
+.btn-success:hover {
+    background: linear-gradient(135deg, #059669 0%, #047857 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px var(--success-glow);
+}
+
+.btn-warning {
+    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+    color: #ffffff;
+    border: none;
+    border-radius: var(--btn-radius);
+    padding: 0.55rem 1.25rem;
+    font-weight: 600;
+    box-shadow: 0 4px 14px var(--warning-glow);
+    transition: all var(--transition-bounce);
+}
+
+.btn-warning:hover {
+    background: linear-gradient(135deg, #d97706 0%, #b45309 100%);
+    color: #ffffff;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px var(--warning-glow);
+}
+
+.btn-danger {
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+    border: none;
+    border-radius: var(--btn-radius);
+    padding: 0.55rem 1.25rem;
+    font-weight: 600;
+    box-shadow: 0 4px 14px var(--danger-glow);
+    transition: all var(--transition-bounce);
+}
+
+.btn-danger:hover {
+    background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px var(--danger-glow);
+}
+
+.btn-secondary {
+    background: #f1f5f9;
+    color: var(--slate-700);
+    border: 1px solid var(--slate-200);
+    border-radius: var(--btn-radius);
+    padding: 0.55rem 1.25rem;
+    font-weight: 600;
+    transition: all var(--transition-bounce);
+}
+
+.btn-secondary:hover {
+    background: #e2e8f0;
+    color: var(--slate-900);
+    transform: translateY(-2px);
+}
+
+/* Campos de Formulario */
 .form-label {
     font-weight: 600;
-    font-size: 0.9rem;
-    color: #334155;
-    margin-bottom: 0.4rem;
+    font-size: 0.875rem;
+    color: var(--slate-700);
+    margin-bottom: 0.45rem;
 }
 
 .form-control, .form-select {
-    border-radius: 0.5rem;
-    border: 1px solid #cbd5e1;
-    padding: 0.6rem 0.85rem;
+    border-radius: 0.55rem;
+    border: 1.5px solid var(--slate-200);
+    padding: 0.65rem 0.95rem;
     font-size: 0.95rem;
-    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    color: var(--slate-800);
+    transition: all var(--transition-fast);
 }
 
 .form-control:focus, .form-select:focus {
-    border-color: var(--primary-color);
-    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
+    border-color: var(--primary);
+    box-shadow: 0 0 0 4px var(--primary-glow);
+    outline: none;
 }
 
-/* Sección de Cursos Dinámicos */
+/* Tarjeta Dinámica de Curso */
 .course-row {
-    background-color: #f8fafc;
-    border: 1px dashed #cbd5e1;
-    border-radius: 0.5rem;
-    padding: 0.85rem;
-    margin-bottom: 0.75rem;
-    transition: background-color 0.2s ease;
+    background: #f8fafc;
+    border: 1.5px dashed var(--slate-300);
+    border-radius: 0.75rem;
+    padding: 1rem;
+    margin-bottom: 0.85rem;
+    transition: all var(--transition-smooth);
 }
 
 .course-row:hover {
-    background-color: #f1f5f9;
+    background: #ffffff;
+    border-color: var(--primary-light);
+    box-shadow: 0 6px 18px rgba(15, 23, 42, 0.05);
 }
 
-/* Autocomplete de jQuery UI estilizado */
+/* ==========================================================================
+   Autocomplete de jQuery UI Estilizado
+   ========================================================================== */
 .ui-autocomplete {
-    background-color: #ffffff;
-    border: 1px solid var(--border-color);
-    border-radius: 0.5rem;
-    box-shadow: var(--shadow-lg);
-    max-height: 220px;
+    background-color: #ffffff !important;
+    border: 1px solid var(--slate-200) !important;
+    border-radius: 0.75rem !important;
+    box-shadow: 0 15px 30px -5px rgba(15, 23, 42, 0.15) !important;
+    max-height: 240px;
     overflow-y: auto;
     overflow-x: hidden;
-    padding: 0.35rem 0;
-    z-index: 1050;
+    padding: 0.5rem 0 !important;
+    z-index: 1060 !important;
     font-family: inherit;
     font-size: 0.9rem;
 }
 
 .ui-menu-item-wrapper {
-    padding: 0.5rem 1rem !important;
-    color: #334155 !important;
+    padding: 0.6rem 1.15rem !important;
+    color: var(--slate-700) !important;
     cursor: pointer;
+    transition: background-color var(--transition-fast);
 }
 
 .ui-menu-item-wrapper.ui-state-active {
-    background-color: var(--primary-color) !important;
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%) !important;
     color: #ffffff !important;
     border: none !important;
     margin: 0 !important;
 }
 
-/* Alertas */
+/* ==========================================================================
+   Alertas Personalizadas
+   ========================================================================== */
 .alert-custom {
-    border-radius: var(--border-radius);
+    border-radius: var(--card-radius);
     border: none;
-    box-shadow: var(--shadow-sm);
+    padding: 1rem 1.25rem;
+    box-shadow: 0 4px 14px rgba(15, 23, 42, 0.06);
     display: flex;
     align-items: center;
     gap: 0.75rem;
 }
 
-/* Footer */
+.alert-success {
+    background: #ecfdf5;
+    border-left: 5px solid var(--success);
+    color: #065f46;
+}
+
+.alert-danger {
+    background: #fef2f2;
+    border-left: 5px solid var(--danger);
+    color: #991b1b;
+}
+
+/* ==========================================================================
+   Footer
+   ========================================================================== */
 footer {
     margin-top: auto;
-    background-color: #ffffff;
-    border-top: 1px solid var(--border-color);
-    color: var(--text-muted);
+    background: #ffffff;
+    border-top: 1px solid var(--slate-200);
+    color: var(--slate-500);
     font-size: 0.85rem;
-    padding: 1.25rem 0;
+    padding: 1.5rem 0;
 }

@@ -51,7 +51,10 @@ if (isset($_POST['correo']) && isset($_POST['pass'])) {
     <nav class="navbar navbar-custom mb-5">
         <div class="container">
             <a class="navbar-brand" href="index.php">
-                <i class="bi bi-mortarboard-fill text-primary"></i> Control Académico
+                <div class="brand-icon">
+                    <i class="bi bi-mortarboard-fill"></i>
+                </div>
+                <span>Control Académico</span>
             </a>
             <a href="index.php" class="btn btn-outline-light btn-sm">
                 <i class="bi bi-arrow-left"></i> Volver al Inicio
@@ -64,10 +67,10 @@ if (isset($_POST['correo']) && isset($_POST['pass'])) {
             <div class="col-12 col-md-8 col-lg-5">
                 <div class="card-custom p-4 p-md-5">
                     <div class="text-center mb-4">
-                        <div class="d-inline-flex align-items-center justify-content-center bg-primary bg-opacity-10 text-primary rounded-circle mb-3" style="width: 64px; height: 64px;">
-                            <i class="bi bi-person-lock fs-2"></i>
+                        <div class="brand-icon mx-auto mb-3" style="width: 56px; height: 56px; font-size: 1.5rem; border-radius: 1rem;">
+                            <i class="bi bi-shield-lock-fill"></i>
                         </div>
-                        <h2 class="h4 fw-bold mb-1">Ingreso al Sistema</h2>
+                        <h2 class="h4 fw-bold mb-1 text-dark">Ingreso al Sistema</h2>
                         <p class="text-muted small">Ingrese sus credenciales de usuario para continuar</p>
                     </div>
 
@@ -84,16 +87,16 @@ if (isset($_POST['correo']) && isset($_POST['pass'])) {
                         <div class="mb-3">
                             <label for="f_correo" class="form-label">Correo Electrónico</label>
                             <div class="input-group">
-                                <span class="input-group-text bg-light text-muted"><i class="bi bi-envelope"></i></span>
-                                <input type="email" name="correo" id="f_correo" class="form-control" placeholder="ejemplo@correo.com" required>
+                                <span class="input-group-text bg-light text-muted border-end-0"><i class="bi bi-envelope"></i></span>
+                                <input type="email" name="correo" id="f_correo" class="form-control border-start-0 ps-0" placeholder="ejemplo@correo.com" required>
                             </div>
                         </div>
 
                         <div class="mb-4">
                             <label for="f_pass" class="form-label">Contraseña</label>
                             <div class="input-group">
-                                <span class="input-group-text bg-light text-muted"><i class="bi bi-shield-lock"></i></span>
-                                <input type="password" name="pass" id="f_pass" class="form-control" placeholder="••••••••" required>
+                                <span class="input-group-text bg-light text-muted border-end-0"><i class="bi bi-lock"></i></span>
+                                <input type="password" name="pass" id="f_pass" class="form-control border-start-0 ps-0" placeholder="••••••••" required>
                             </div>
                         </div>
 
@@ -101,7 +104,7 @@ if (isset($_POST['correo']) && isset($_POST['pass'])) {
                             <button type="submit" class="btn btn-primary fw-semibold py-2">
                                 <i class="bi bi-box-arrow-in-right me-1"></i> Iniciar Sesión
                             </button>
-                            <a href="index.php" class="btn btn-outline-secondary py-2">
+                            <a href="index.php" class="btn btn-secondary py-2 text-center text-decoration-none">
                                 Cancelar
                             </a>
                         </div>

@@ -2,15 +2,16 @@
 session_start();
 require_once "db.php";
 
-// Validación de parámetro id_alumno
-if (!isset($_GET['id_alumno']) || !is_numeric($_GET['id_alumno'])) {
+// Validación de parámetro id_alumno o id
+$id_param = $_GET['id_alumno'] ?? $_GET['id'] ?? null;
+if ($id_param === null || !is_numeric($id_param)) {
     $_SESSION['error'] = "No se especificó un identificador de alumno válido.";
     header('Location: index.php');
     exit();
 }
 
 $stmt = $pdo->prepare("SELECT id_alumno, nombres, apellidos, correo, aficiones FROM alumno WHERE id_alumno = :idx");
-$stmt->execute([':idx' => $_GET['id_alumno']]);
+$stmt->execute([':idx' => $id_param]);
 $alumno = $stmt->fetch();
 
 if ($alumno === false) {
@@ -27,7 +28,7 @@ $stmtCursos = $pdo->prepare("
     WHERE ac.id_alumno = :idx 
     ORDER BY ac.anio DESC, c.nombre ASC
 ");
-$stmtCursos->execute([':idx' => $_GET['id_alumno']]);
+$stmtCursos->execute([':idx' => $id_param]);
 $cursos = $stmtCursos->fetchAll();
 ?>
 <!DOCTYPE html>
@@ -40,7 +41,10 @@ $cursos = $stmtCursos->fetchAll();
     <nav class="navbar navbar-custom mb-4">
         <div class="container">
             <a class="navbar-brand" href="index.php">
-                <i class="bi bi-mortarboard-fill text-primary"></i> Control Académico
+                <div class="brand-icon">
+                    <i class="bi bi-mortarboard-fill"></i>
+                </div>
+                <span>Control Académico</span>
             </a>
             <div class="d-flex align-items-center gap-2">
                 <a href="index.php" class="btn btn-outline-light btn-sm">
@@ -58,34 +62,36 @@ $cursos = $stmtCursos->fetchAll();
                         <h2 class="h5 fw-bold mb-0 text-dark">
                             <i class="bi bi-person-badge text-primary me-2"></i> Expediente del Estudiante
                         </h2>
-                        <span class="badge bg-secondary">ID: #<?= (int)$alumno['id_alumno'] ?></span>
+                        <span class="badge bg-primary bg-opacity-10 text-primary px-3 py-2 rounded-pill font-monospace">
+                            ID: #<?= (int)$alumno['id_alumno'] ?>
+                        </span>
                     </div>
 
-                    <div class="p-4">
-                        <div class="row g-3 mb-4">
+                    <div class="p-4 p-md-5">
+                        <div class="row g-4 mb-4">
                             <div class="col-md-6">
-                                <label class="text-muted small fw-semibold text-uppercase">Nombres</label>
-                                <p class="fs-6 fw-bold mb-0 text-dark"><?= htmlspecialchars($alumno['nombres'], ENT_QUOTES, 'UTF-8') ?></p>
+                                <label class="text-muted small fw-semibold text-uppercase tracking-wider">Nombres</label>
+                                <p class="fs-5 fw-bold mb-0 text-dark"><?= htmlspecialchars($alumno['nombres'], ENT_QUOTES, 'UTF-8') ?></p>
                             </div>
                             <div class="col-md-6">
-                                <label class="text-muted small fw-semibold text-uppercase">Apellidos</label>
-                                <p class="fs-6 fw-bold mb-0 text-dark"><?= htmlspecialchars($alumno['apellidos'], ENT_QUOTES, 'UTF-8') ?></p>
+                                <label class="text-muted small fw-semibold text-uppercase tracking-wider">Apellidos</label>
+                                <p class="fs-5 fw-bold mb-0 text-dark"><?= htmlspecialchars($alumno['apellidos'], ENT_QUOTES, 'UTF-8') ?></p>
                             </div>
                             <div class="col-md-6">
-                                <label class="text-muted small fw-semibold text-uppercase">Correo Electrónico</label>
+                                <label class="text-muted small fw-semibold text-uppercase tracking-wider">Correo Electrónico</label>
                                 <p class="fs-6 mb-0">
-                                    <a href="mailto:<?= htmlspecialchars($alumno['correo'], ENT_QUOTES, 'UTF-8') ?>" class="text-decoration-none">
-                                        <i class="bi bi-envelope me-1"></i><?= htmlspecialchars($alumno['correo'], ENT_QUOTES, 'UTF-8') ?>
+                                    <a href="mailto:<?= htmlspecialchars($alumno['correo'], ENT_QUOTES, 'UTF-8') ?>" class="text-decoration-none fw-medium">
+                                        <i class="bi bi-envelope me-1 text-primary"></i><?= htmlspecialchars($alumno['correo'], ENT_QUOTES, 'UTF-8') ?>
                                     </a>
                                 </p>
                             </div>
                             <div class="col-md-6">
-                                <label class="text-muted small fw-semibold text-uppercase">Aficiones y Pasatiempos</label>
+                                <label class="text-muted small fw-semibold text-uppercase tracking-wider">Aficiones y Pasatiempos</label>
                                 <p class="fs-6 mb-0 text-secondary"><?= nl2br(htmlspecialchars($alumno['aficiones'], ENT_QUOTES, 'UTF-8')) ?></p>
                             </div>
                         </div>
 
-                        <hr class="my-4">
+                        <hr class="my-4 text-muted opacity-25">
 
                         <h3 class="h6 fw-bold text-dark mb-3">
                             <i class="bi bi-award text-warning me-2"></i> Cursos y Certificaciones IT
@@ -96,16 +102,21 @@ $cursos = $stmtCursos->fetchAll();
                                 <table class="table table-custom table-bordered">
                                     <thead>
                                         <tr>
-                                            <th style="width: 120px;">Año</th>
+                                            <th style="width: 130px;">Año</th>
                                             <th>Nombre del Curso / Certificación</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <?php foreach ($cursos as $cur): ?>
+                                        <?php foreach ($cursos as $cur): 
+                                            $anioDisplay = (int)$cur['anio'];
+                                            if ($anioDisplay >= 0 && $anioDisplay <= 99) {
+                                                $anioDisplay += 2000;
+                                            }
+                                        ?>
                                             <tr>
                                                 <td>
-                                                    <span class="badge bg-primary bg-opacity-10 text-primary fw-semibold px-2 py-1">
-                                                        <?= htmlspecialchars($cur['anio'], ENT_QUOTES, 'UTF-8') ?>
+                                                    <span class="badge bg-primary bg-opacity-10 text-primary fw-bold px-3 py-1 rounded-pill">
+                                                        <?= htmlspecialchars((string)$anioDisplay, ENT_QUOTES, 'UTF-8') ?>
                                                     </span>
                                                 </td>
                                                 <td class="fw-medium text-dark">
@@ -122,9 +133,9 @@ $cursos = $stmtCursos->fetchAll();
                             </div>
                         <?php endif; ?>
 
-                        <div class="mt-4 pt-2 d-flex gap-2">
+                        <div class="mt-4 pt-3 d-flex gap-2">
                             <a href="index.php" class="btn btn-secondary">
-                                <i class="bi bi-arrow-left me-1"></i> Regresar
+                                <i class="bi bi-arrow-left me-1"></i> Regresar a la Lista
                             </a>
                             <?php if (isset($_SESSION['id_usuario'])): ?>
                                 <a href="editar_db.php?id_alumno=<?= (int)$alumno['id_alumno'] ?>" class="btn btn-warning">
