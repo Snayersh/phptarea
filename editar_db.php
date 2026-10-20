@@ -31,25 +31,43 @@ if ($id_post !== null && is_numeric($id_post) && isset($_POST['nombres']) && iss
     }
 
     // Validación de cursos
+    $cursosAProcesar = [];
     for ($i = 1; $i <= 9; $i++) {
         if (!isset($_POST['cur_anio' . $i]) || !isset($_POST['cur_nombre' . $i])) {
             continue;
         }
 
-        $anio = trim($_POST['cur_anio' . $i]);
+        $anioRaw = trim($_POST['cur_anio' . $i]);
         $curso = trim($_POST['cur_nombre' . $i]);
 
-        if (strlen($anio) === 0 || strlen($curso) === 0) {
+        if (strlen($anioRaw) === 0 || strlen($curso) === 0) {
             $_SESSION['error'] = 'Todos los campos de cursos son requeridos.';
             header("Location: editar_db.php?id_alumno=" . $id_alumno);
             exit();
         }
 
-        if (!is_numeric($anio) || (int)$anio < 1900 || (int)$anio > 2100) {
+        if (!is_numeric($anioRaw)) {
             $_SESSION['error'] = 'El año del curso debe ser numérico.';
             header("Location: editar_db.php?id_alumno=" . $id_alumno);
             exit();
         }
+
+        $anioNum = (int)$anioRaw;
+        // Si ingresaron 2 dígitos (ej. 24), convertir a 4 dígitos (ej. 2024)
+        if ($anioNum >= 0 && $anioNum <= 99) {
+            $anioNum += 2000;
+        }
+
+        if ($anioNum < 1900 || $anioNum > 2100) {
+            $_SESSION['error'] = 'El año del curso debe ser un año válido (ej. 2024).';
+            header("Location: editar_db.php?id_alumno=" . $id_alumno);
+            exit();
+        }
+
+        $cursosAProcesar[] = [
+            'anio'   => $anioNum,
+            'nombre' => $curso
+        ];
     }
 
     try {
@@ -74,13 +92,9 @@ if ($id_post !== null && is_numeric($id_post) && isset($_POST['nombres']) && iss
         $stmtDelCursos->execute([':id' => $id_alumno]);
 
         // 3. Inserción de cursos actualizados
-        for ($i = 1; $i <= 9; $i++) {
-            if (!isset($_POST['cur_anio' . $i]) || !isset($_POST['cur_nombre' . $i])) {
-                continue;
-            }
-
-            $anio = (int)$_POST['cur_anio' . $i];
-            $curso = trim($_POST['cur_nombre' . $i]);
+        foreach ($cursosAProcesar as $curItem) {
+            $anioVal = $curItem['anio'];
+            $curso = $curItem['nombre'];
 
             // Buscar si el curso ya existe en el catálogo
             $stmtC = $pdo->prepare('SELECT id_curso FROM cursos WHERE nombre = :nom');
@@ -96,11 +110,24 @@ if ($id_post !== null && is_numeric($id_post) && isset($_POST['nombres']) && iss
             }
 
             $stmtAC = $pdo->prepare('INSERT INTO alumno_cursos (id_alumno, anio, id_curso) VALUES (:ida, :anio, :idc)');
-            $stmtAC->execute([
-                ':ida'  => $id_alumno,
-                ':anio' => $anio,
-                ':idc'  => $id_curso
-            ]);
+            try {
+                $stmtAC->execute([
+                    ':ida'  => $id_alumno,
+                    ':anio' => $anioVal,
+                    ':idc'  => $id_curso
+                ]);
+            } catch (PDOException $ex) {
+                // Si la columna en la BD fuera TINYINT (max 255), guardar formato de 2 dígitos (ej. 24) para evitar overflow 1264
+                if ($ex->getCode() == '22003' || strpos($ex->getMessage(), '1264') !== false) {
+                    $stmtAC->execute([
+                        ':ida'  => $id_alumno,
+                        ':anio' => $anioVal % 100,
+                        ':idc'  => $id_curso
+                    ]);
+                } else {
+                    throw $ex;
+                }
+            }
         }
 
         $pdo->commit();
@@ -226,12 +253,16 @@ $cursosActuales = $stmtCursos->fetchAll();
                                     $pos = 0;
                                     foreach ($cursosActuales as $cur): 
                                         $pos++;
+                                        $anioMostrado = (int)$cur['anio'];
+                                        if ($anioMostrado >= 0 && $anioMostrado <= 99) {
+                                            $anioMostrado += 2000;
+                                        }
                                     ?>
                                         <div class="course-row" id="curso<?= $pos ?>">
                                             <div class="row g-2 align-items-center">
                                                 <div class="col-3 col-sm-2">
                                                     <label class="form-label small text-muted mb-1">Año</label>
-                                                    <input type="number" name="cur_anio<?= $pos ?>" class="form-control form-control-sm" value="<?= htmlspecialchars($cur['anio'], ENT_QUOTES, 'UTF-8') ?>" min="1900" max="2100" required>
+                                                    <input type="number" name="cur_anio<?= $pos ?>" class="form-control form-control-sm" value="<?= $anioMostrado ?>" min="1900" max="2100" required>
                                                 </div>
                                                 <div class="col-7 col-sm-8">
                                                     <label class="form-label small text-muted mb-1">Nombre del Curso</label>
@@ -295,7 +326,7 @@ $cursosActuales = $stmtCursos->fetchAll();
                     '<div class="row g-2 align-items-center">' +
                         '<div class="col-3 col-sm-2">' +
                             '<label class="form-label small text-muted mb-1">Año</label>' +
-                            '<input type="number" name="cur_anio' + cuentaCur + '" class="form-control form-control-sm" placeholder="2023" min="1900" max="2100" required>' +
+                            '<input type="number" name="cur_anio' + cuentaCur + '" class="form-control form-control-sm" placeholder="2024" min="1900" max="2100" required>' +
                         '</div>' +
                         '<div class="col-7 col-sm-8">' +
                             '<label class="form-label small text-muted mb-1">Nombre del Curso</label>' +

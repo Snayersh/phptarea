@@ -29,25 +29,43 @@ if (isset($_POST['nombres']) && isset($_POST['apellidos']) && isset($_POST['corr
     }
 
     // Validación de cursos agregados dinámicamente
+    $cursosAProcesar = [];
     for ($i = 1; $i <= 9; $i++) {
         if (!isset($_POST['cur_anio' . $i]) || !isset($_POST['cur_nombre' . $i])) {
             continue;
         }
 
-        $anio = trim($_POST['cur_anio' . $i]);
+        $anioRaw = trim($_POST['cur_anio' . $i]);
         $curso = trim($_POST['cur_nombre' . $i]);
 
-        if (strlen($anio) === 0 || strlen($curso) === 0) {
+        if (strlen($anioRaw) === 0 || strlen($curso) === 0) {
             $_SESSION['error'] = 'Todos los campos de cursos son requeridos.';
             header("Location: nuevo.php");
             exit();
         }
 
-        if (!is_numeric($anio) || (int)$anio < 1900 || (int)$anio > 2100) {
-            $_SESSION['error'] = 'El año del curso debe ser un valor numérico válido.';
+        if (!is_numeric($anioRaw)) {
+            $_SESSION['error'] = 'El año del curso debe ser un valor numérico.';
             header("Location: nuevo.php");
             exit();
         }
+
+        $anioNum = (int)$anioRaw;
+        // Si ingresaron 2 dígitos (ej. 24), convertir a 4 dígitos (ej. 2024)
+        if ($anioNum >= 0 && $anioNum <= 99) {
+            $anioNum += 2000;
+        }
+
+        if ($anioNum < 1900 || $anioNum > 2100) {
+            $_SESSION['error'] = 'El año del curso debe ser un valor válido (ej. 2024).';
+            header("Location: nuevo.php");
+            exit();
+        }
+
+        $cursosAProcesar[] = [
+            'anio'   => $anioNum,
+            'nombre' => $curso
+        ];
     }
 
     try {
@@ -65,13 +83,9 @@ if (isset($_POST['nombres']) && isset($_POST['apellidos']) && isset($_POST['corr
         $id_alumno = $pdo->lastInsertId();
 
         // Inserción de cursos asociados
-        for ($i = 1; $i <= 9; $i++) {
-            if (!isset($_POST['cur_anio' . $i]) || !isset($_POST['cur_nombre' . $i])) {
-                continue;
-            }
-
-            $anio = (int)$_POST['cur_anio' . $i];
-            $curso = trim($_POST['cur_nombre' . $i]);
+        foreach ($cursosAProcesar as $curItem) {
+            $anioVal = $curItem['anio'];
+            $curso = $curItem['nombre'];
 
             // Buscar si el curso ya existe
             $stmtC = $pdo->prepare('SELECT id_curso FROM cursos WHERE nombre = :nom');
@@ -87,11 +101,24 @@ if (isset($_POST['nombres']) && isset($_POST['apellidos']) && isset($_POST['corr
             }
 
             $stmtAC = $pdo->prepare('INSERT INTO alumno_cursos (id_alumno, anio, id_curso) VALUES (:ide, :anio, :idc)');
-            $stmtAC->execute([
-                ':ide'  => $id_alumno,
-                ':anio' => $anio,
-                ':idc'  => $id_curso
-            ]);
+            try {
+                $stmtAC->execute([
+                    ':ide'  => $id_alumno,
+                    ':anio' => $anioVal,
+                    ':idc'  => $id_curso
+                ]);
+            } catch (PDOException $ex) {
+                // Si la columna en la BD fuera TINYINT (max 255), guardar formato de 2 dígitos (ej. 24)
+                if ($ex->getCode() == '22003' || strpos($ex->getMessage(), '1264') !== false) {
+                    $stmtAC->execute([
+                        ':ide'  => $id_alumno,
+                        ':anio' => $anioVal % 100,
+                        ':idc'  => $id_curso
+                    ]);
+                } else {
+                    throw $ex;
+                }
+            }
         }
 
         $pdo->commit();
@@ -224,7 +251,7 @@ if (isset($_POST['nombres']) && isset($_POST['apellidos']) && isset($_POST['corr
                     '<div class="row g-2 align-items-center">' +
                         '<div class="col-3 col-sm-2">' +
                             '<label class="form-label small text-muted mb-1">Año</label>' +
-                            '<input type="number" name="cur_anio' + cuentaCur + '" class="form-control form-control-sm" placeholder="2023" min="1900" max="2100" required>' +
+                            '<input type="number" name="cur_anio' + cuentaCur + '" class="form-control form-control-sm" placeholder="2024" min="1900" max="2100" required>' +
                         '</div>' +
                         '<div class="col-7 col-sm-8">' +
                             '<label class="form-label small text-muted mb-1">Nombre del Curso</label>' +

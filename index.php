@@ -37,21 +37,33 @@ require_once "db.php";
         <!-- Requerimiento Obligatorio: Sección de Integrantes del Grupo -->
         <div class="team-card p-3 p-md-4 mb-4">
             <div class="row align-items-center">
-                <div class="col-12 col-md-4 mb-2 mb-md-0">
+                <div class="col-12 col-lg-3 mb-3 mb-lg-0">
                     <h2 class="h6 text-uppercase fw-bold text-primary mb-1">
-                        <i class="bi bi-people-fill me-1"></i> Integrantes del Proyecto
+                        <i class="bi bi-people-fill me-1"></i> Integrantes del grupo
                     </h2>
                     <p class="text-muted small mb-0">Desarrollo Web - PHP & MySQL</p>
                 </div>
-                <div class="col-12 col-md-8">
-                    <div class="d-flex flex-wrap gap-2 justify-content-md-end">
+                <div class="col-12 col-lg-9">
+                    <div class="d-flex flex-wrap gap-2 justify-content-lg-end">
                         <span class="member-badge">
                             <i class="bi bi-person-fill"></i>
-                            <strong>Juan Carlos López</strong> &bull; Carné: 7690-20-12345
+                            <strong>Martin Tecun</strong> &bull; Carné: 5190-22-17145
                         </span>
                         <span class="member-badge">
                             <i class="bi bi-person-fill"></i>
-                            <strong>Integrante 2</strong> &bull; Carné: 7690-20-00000
+                            <strong>Daniel Suarez Gil</strong> &bull; Carné: 5190-23-3629
+                        </span>
+                        <span class="member-badge">
+                            <i class="bi bi-person-fill"></i>
+                            <strong>Seily Herrera</strong> &bull; Carné: 5190-22-2228
+                        </span>
+                        <span class="member-badge">
+                            <i class="bi bi-person-fill"></i>
+                            <strong>Juan Garcia</strong> &bull; Carné: 5190-23-6107
+                        </span>
+                        <span class="member-badge">
+                            <i class="bi bi-person-fill"></i>
+                            <strong>Eber Rivera</strong> &bull; Carné: 5190-23-9331
                         </span>
                     </div>
                 </div>
