@@ -1,0 +1,222 @@
+/* ==========================================================================
+   Estilos Personalizados del Sistema de Gestión de Alumnos
+   Desarrollado para entrega académica - Bootstrap 5 Companion Styles
+   ========================================================================== */
+
+:root {
+    --primary-color: #4f46e5;
+    --primary-hover: #4338ca;
+    --secondary-color: #0ea5e9;
+    --success-color: #10b981;
+    --danger-color: #ef4444;
+    --warning-color: #f59e0b;
+    --dark-color: #1e293b;
+    --light-bg: #f8fafc;
+    --card-bg: #ffffff;
+    --border-color: #e2e8f0;
+    --text-muted: #64748b;
+    --border-radius: 0.75rem;
+    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+}
+
+body {
+    background-color: var(--light-bg);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    color: #334155;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Navbar Custom */
+.navbar-custom {
+    background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+    box-shadow: var(--shadow-md);
+    padding: 0.85rem 0;
+}
+
+.navbar-brand {
+    font-weight: 700;
+    font-size: 1.25rem;
+    color: #ffffff !important;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* Tarjeta de Integrantes del Grupo */
+.team-card {
+    background: linear-gradient(135deg, #ffffff 0%, #f1f5f9 100%);
+    border: 1px solid var(--border-color);
+    border-left: 5px solid var(--primary-color);
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-sm);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.team-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+.member-badge {
+    background: #e0e7ff;
+    color: var(--primary-hover);
+    font-weight: 600;
+    font-size: 0.85rem;
+    padding: 0.4rem 0.75rem;
+    border-radius: 9999px;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+}
+
+/* Tarjetas Principales */
+.card-custom {
+    background-color: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-sm);
+    overflow: hidden;
+}
+
+.card-header-custom {
+    background-color: #ffffff;
+    border-bottom: 1px solid var(--border-color);
+    padding: 1.25rem 1.5rem;
+}
+
+/* Tablas */
+.table-custom {
+    margin-bottom: 0;
+    vertical-align: middle;
+}
+
+.table-custom thead th {
+    background-color: #f1f5f9;
+    color: #475569;
+    font-size: 0.825rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    border-top: none;
+    border-bottom: 1px solid var(--border-color);
+    padding: 0.9rem 1rem;
+}
+
+.table-custom tbody tr {
+    transition: background-color 0.15s ease;
+}
+
+.table-custom tbody tr:hover {
+    background-color: #f8fafc;
+}
+
+.table-custom tbody td {
+    padding: 0.9rem 1rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+/* Botones de Acción en Tablas */
+.action-btn-group {
+    display: inline-flex;
+    gap: 0.35rem;
+    align-items: center;
+}
+
+.btn-sm-action {
+    padding: 0.35rem 0.65rem;
+    font-size: 0.8rem;
+    font-weight: 500;
+    border-radius: 0.45rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    text-decoration: none;
+    transition: all 0.15s ease-in-out;
+}
+
+/* Formularios */
+.form-label {
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: #334155;
+    margin-bottom: 0.4rem;
+}
+
+.form-control, .form-select {
+    border-radius: 0.5rem;
+    border: 1px solid #cbd5e1;
+    padding: 0.6rem 0.85rem;
+    font-size: 0.95rem;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.form-control:focus, .form-select:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
+}
+
+/* Sección de Cursos Dinámicos */
+.course-row {
+    background-color: #f8fafc;
+    border: 1px dashed #cbd5e1;
+    border-radius: 0.5rem;
+    padding: 0.85rem;
+    margin-bottom: 0.75rem;
+    transition: background-color 0.2s ease;
+}
+
+.course-row:hover {
+    background-color: #f1f5f9;
+}
+
+/* Autocomplete de jQuery UI estilizado */
+.ui-autocomplete {
+    background-color: #ffffff;
+    border: 1px solid var(--border-color);
+    border-radius: 0.5rem;
+    box-shadow: var(--shadow-lg);
+    max-height: 220px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 0.35rem 0;
+    z-index: 1050;
+    font-family: inherit;
+    font-size: 0.9rem;
+}
+
+.ui-menu-item-wrapper {
+    padding: 0.5rem 1rem !important;
+    color: #334155 !important;
+    cursor: pointer;
+}
+
+.ui-menu-item-wrapper.ui-state-active {
+    background-color: var(--primary-color) !important;
+    color: #ffffff !important;
+    border: none !important;
+    margin: 0 !important;
+}
+
+/* Alertas */
+.alert-custom {
+    border-radius: var(--border-radius);
+    border: none;
+    box-shadow: var(--shadow-sm);
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+/* Footer */
+footer {
+    margin-top: auto;
+    background-color: #ffffff;
+    border-top: 1px solid var(--border-color);
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    padding: 1.25rem 0;
+}

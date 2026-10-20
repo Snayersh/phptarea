@@ -10,8 +10,9 @@ if (!isset($_SESSION['id_usuario'])) {
 }
 
 // Procesar actualización (POST)
-if (isset($_POST['id_alumno']) && isset($_POST['nombres']) && isset($_POST['apellidos']) && isset($_POST['correo']) && isset($_POST['aficiones'])) {
-    $id_alumno = (int)$_POST['id_alumno'];
+$id_post = $_POST['id_alumno'] ?? $_POST['id'] ?? null;
+if ($id_post !== null && is_numeric($id_post) && isset($_POST['nombres']) && isset($_POST['apellidos']) && isset($_POST['correo']) && isset($_POST['aficiones'])) {
+    $id_alumno = (int)$id_post;
     $nombres = trim($_POST['nombres']);
     $apellidos = trim($_POST['apellidos']);
     $correo = trim($_POST['correo']);
@@ -115,13 +116,14 @@ if (isset($_POST['id_alumno']) && isset($_POST['nombres']) && isset($_POST['apel
 }
 
 // Carga inicial de datos vía GET
-if (!isset($_GET['id_alumno']) || !is_numeric($_GET['id_alumno'])) {
+$id_get = $_GET['id_alumno'] ?? $_GET['id'] ?? null;
+if ($id_get === null || !is_numeric($id_get)) {
     $_SESSION['error'] = "No se especificó un estudiante para editar.";
     header('Location: index.php');
     exit();
 }
 
-$id_alumno = (int)$_GET['id_alumno'];
+$id_alumno = (int)$id_get;
 
 $stmt = $pdo->prepare('SELECT id_alumno, nombres, apellidos, correo, aficiones FROM alumno WHERE id_alumno = :id');
 $stmt->execute([':id' => $id_alumno]);

@@ -1,6 +1,6 @@
 <?php
 // Configuración de conexión a la base de datos MariaDB / MySQL
-$host = 'localhost';
+$host = '127.0.0.1';
 $port = '3306';
 $dbname = 'alumnos';
 $user = 'root';
